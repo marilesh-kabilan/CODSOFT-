@@ -1,4 +1,3 @@
-# CODSOFT-
 def show_menu():
     print("\n📋 Today's Menu:")
     menu = {
