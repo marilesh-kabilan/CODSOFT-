@@ -1,0 +1,62 @@
+from tensorflow.keras.datasets import mnist
+from tensorflow.keras.utils import to_categorical
+import matplotlib.pyplot as plt
+
+# Load the dataset
+(x_train, y_train), (x_test, y_test) = mnist.load_data()
+
+# Check the shapes
+print(x_train.shape)  # (60000, 28, 28)
+print(x_test.shape)   # (10000, 28, 28)
+
+# Visualize some samples
+plt.imshow(x_train[0])
+plt.title(f"Label: {y_train[0]}")
+plt.show()
+
+plt.imshow(x_train[1])
+plt.title(f"Label: {y_train[1]}")
+plt.show()
+
+plt.imshow(x_train[2])
+plt.title(f"Label: {y_train[2]}")
+plt.show()
+
+# Normalize the data
+x_train = x_train.astype("float32") / 255
+x_test = x_test.astype("float32") / 255
+
+# Reshape the data (if needed for CNN
+x_train = x_train.reshape((-1, 28, 28, 1))
+x_test = x_test.reshape((-1, 28, 28, 1))
+
+y_train = to_categorical(y_train,num_classes=10)
+y_test = to_categorical(y_test,num_classes=10)
+
+
+
+#Testing accuracy 
+
+
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Flatten, Dense
+
+# Define the model
+model = Sequential()
+model.add(Flatten(input_shape=(28, 28, 1)))  # Automatically reshapes to (784,)
+model.add(Dense(64, activation='relu'))
+model.add(Dense(128, activation='relu'))
+model.add(Dense(10, activation='softmax'))
+
+# Compile the model
+model.compile(optimizer='adam',
+              loss='categorical_crossentropy',
+              metrics=['accuracy'])
+
+# Train the model
+model.fit(x_train, y_train, epochs=10, batch_size=32, validation_data=(x_test, y_test))
+
+# Evaluate the model
+loss, accuracy = model.evaluate(x_test, y_test, verbose=0)
+print('Test loss:', loss)
+print('Test accuracy:', accuracy)
